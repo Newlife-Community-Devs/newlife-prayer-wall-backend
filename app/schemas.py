@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 from enum import Enum
@@ -29,14 +29,13 @@ class UserCreate(BaseModel):
 
 
 class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     email: EmailStr
     full_name: Optional[str]
     is_active: bool
     is_admin: bool
-
-    class Config:
-        orm_mode = True
 
 
 class PrayerCreate(BaseModel):
@@ -49,6 +48,8 @@ class PrayerCreate(BaseModel):
 
 
 class PrayerOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     title: Optional[str]
     content: str
@@ -59,9 +60,6 @@ class PrayerOut(BaseModel):
     submitter_name: Optional[str]
     phone_number: Optional[str]
     is_anonymous: Optional[bool]
-
-    class Config:
-        orm_mode = True
 
 
 class Token(BaseModel):
@@ -78,12 +76,11 @@ class PrayerPublicIn(BaseModel):
 
 
 class PrayerListOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     items: list[PrayerOut]
     total: int
     has_more: bool
-
-    class Config:
-        orm_mode = True
 
 
 class PrayerUpdate(BaseModel):
