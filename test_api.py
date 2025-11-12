@@ -20,6 +20,7 @@ import os
 import sys
 import time
 import requests
+import argparse
 
 
 BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8000")
@@ -27,10 +28,20 @@ USERNAME = os.environ.get("USERNAME", "admin@prayerwall.com")
 PASSWORD = os.environ.get("PASSWORD", "Prayer123!")
 
 
-def get_token():
-    url = f"{BASE_URL}/auth/token"
-    data = {"username": USERNAME, "password": PASSWORD}
-    print(f"Requesting token for {USERNAME}...")
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Smoke test for PrayerWall backend")
+    parser.add_argument("--base-url", default=BASE_URL,
+                        help="Backend base URL")
+    parser.add_argument("--username", default=USERNAME, help="Admin username")
+    parser.add_argument("--password", default=PASSWORD, help="Admin password")
+    return parser.parse_args()
+
+
+def get_token(base_url: str, username: str, password: str):
+    url = f"{base_url}/auth/token"
+    data = {"username": username, "password": password}
+    print(f"Requesting token for {username}...")
     r = requests.post(url, data=data)
     r.raise_for_status()
     j = r.json()
@@ -38,8 +49,8 @@ def get_token():
     return j["access_token"]
 
 
-def submit_prayer(token: str, title: str, body: str):
-    url = f"{BASE_URL}/prayers/submit"
+def submit_prayer(base_url: str, token: str, title: str, body: str):
+    url = f"{base_url}/prayers/submit"
     payload = {
         "prayerRequest": body,
         "name": "Auto Tester",
@@ -56,16 +67,17 @@ def submit_prayer(token: str, title: str, body: str):
     return j
 
 
-def fetch_wall():
-    url = f"{BASE_URL}/prayers/wall"
+def fetch_wall(base_url: str):
+    url = f"{base_url}/prayers/wall"
     r = requests.get(url)
     r.raise_for_status()
     return r.json()
 
 
 def main():
+    args = parse_args()
     try:
-        token = get_token()
+        token = get_token(args.base_url, args.username, args.password)
     except Exception as e:
         print("Failed to get token:", e)
         sys.exit(2)
@@ -74,7 +86,7 @@ def main():
     body = f"Automated test prayer from test_api.py at {time.asctime()}"
 
     try:
-        submit_prayer(token, title, body)
+        submit_prayer(args.base_url, token, title, body)
     except Exception as e:
         print("Failed to submit prayer:", e)
         sys.exit(3)
@@ -83,7 +95,7 @@ def main():
     time.sleep(1)
 
     try:
-        wall = fetch_wall()
+        wall = fetch_wall(args.base_url)
         print("Fetched prayer wall, total items:", wall.get("total"))
         # naive check: search for our body in any item
         found = False
