@@ -3,7 +3,22 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from .config import DATABASE_URL
 
-engine = create_engine(DATABASE_URL)
+# Serverless-friendly connection settings
+# - pool_pre_ping: verify connections before using
+# - pool_recycle: recycle connections after 300 seconds
+# - pool_size: limit connections for serverless (1 per function instance)
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=300,
+    pool_size=5,
+    max_overflow=10,
+    connect_args={
+        "connect_timeout": 10,
+        "options": "-c timezone=utc"
+    }
+)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

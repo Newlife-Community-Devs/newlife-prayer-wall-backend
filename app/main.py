@@ -18,8 +18,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup():
-    # create tables if they don't exist
-    Base.metadata.create_all(bind=engine)
+    """Create tables if they don't exist. Wrapped in try-except for serverless."""
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        # Log but don't crash - serverless may not need this on every cold start
+        print(f"Warning: Could not create tables on startup: {e}")
 
 
 app.include_router(api_router)
