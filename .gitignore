@@ -1,9 +1,46 @@
-# Python
+# ============================================
+# SECURITY-SENSITIVE FILES - NEVER COMMIT!
+# ============================================
+
+# Environment variables (contains secrets!)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+
+# Database files (may contain sensitive data)
+*.db
+*.sqlite
+*.sqlite3
+
+# SSL/TLS certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Backup files (may contain sensitive data)
+*.bak
+*.backup
+*.sql
+*.dump
+
+# ============================================
+# PYTHON
+# ============================================
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# Distribution / packaging
 build/
 develop-eggs/
 dist/
@@ -16,24 +53,159 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
-# Virtual Environment
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+
+# ============================================
+# VIRTUAL ENVIRONMENTS
+# ============================================
+
 venv/
-.env
 .venv
 env/
 ENV/
+env.bak/
+venv.bak/
 
-# IDE
+# ============================================
+# IDEs and EDITORS
+# ============================================
+
+# VSCode
 .vscode/
+*.code-workspace
+
+# PyCharm
 .idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
 *.swp
 *.swo
+*~
 
-# Local development
+# Emacs
+*~
+\#*\#
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# OPERATING SYSTEM FILES
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# LOGS AND TEMPORARY FILES
+# ============================================
+
 *.log
-.env.local
-.env.*.local
+*.log.*
+logs/
+*.tmp
+*.temp
+
+# ============================================
+# DEVELOPMENT AND TESTING
+# ============================================
+
+# Local test data
+test_data/
+*.test
+
+# Documentation builds
+docs/_build/
+site/
+
+# ============================================
+# DOCKER (if using)
+# ============================================
+
+# Don't commit local Docker overrides
+docker-compose.override.yml
+
+# ============================================
+# MIGRATIONS (be careful with these)
+# ============================================
+
+# Alembic (if you add it later)
+# alembic/versions/*.py  # Uncomment if you want to ignore migration files
+
+# ============================================
+# MISC
+# ============================================
+
+# Node modules (if you have any JS tooling)
+node_modules/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/

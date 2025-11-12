@@ -4,7 +4,7 @@
 
 **API Version**: 1.0.0
 
-**Repository**: https://github.com/Newlife-Community-Devs/newlife-prayer-wall-backendThis document provides comprehensive documentation for the PrayerWall FastAPI backend. It covers all endpoints, authentication, request/response schemas, deployment configuration, and testing procedures.
+**Repository**: https://github.com/Newlife-Community-Devs/newlife-prayer-wall-backend This document provides comprehensive documentation for the PrayerWall FastAPI backend. It covers all endpoints, authentication, request/response schemas, deployment configuration, and testing procedures.
 
 This document provides comprehensive documentation for the PrayerWall FastAPI backend, covering all endpoints, authentication, request/response schemas, deployment configuration, and testing procedures.## Base Information
 
