@@ -26,12 +26,28 @@ def list_all_prayers(
     return {"items": items, "total": total, "has_more": has_more}
 
 
-@router.patch("/prayers/{prayer_id}/answered", response_model=schemas.PrayerOut)
-def mark_answered(prayer_id: int, answered: bool = True, db: Session = Depends(get_db), admin=Depends(require_admin)):
+@router.patch("/prayers/{prayer_id}/approve", response_model=schemas.PrayerOut)
+def approve_prayer(prayer_id: int, db: Session = Depends(get_db), admin=Depends(require_admin)):
+    """Approve a prayer request (set status to 'approved')"""
     prayer = crud.get_prayer(db, prayer_id)
     if not prayer:
         raise HTTPException(status_code=404, detail="Prayer not found")
-    return crud.mark_prayer_answered(db, prayer, answered=answered)
+    prayer.status = "approved"
+    db.commit()
+    db.refresh(prayer)
+    return prayer
+
+
+@router.patch("/prayers/{prayer_id}/answered", response_model=schemas.PrayerOut)
+def mark_answered(prayer_id: int, answered: bool = True, db: Session = Depends(get_db), admin=Depends(require_admin)):
+    """Mark a prayer request as answered"""
+    prayer = crud.get_prayer(db, prayer_id)
+    if not prayer:
+        raise HTTPException(status_code=404, detail="Prayer not found")
+    prayer.is_answered = answered
+    db.commit()
+    db.refresh(prayer)
+    return prayer
 
 
 @router.delete("/prayers/{prayer_id}")
