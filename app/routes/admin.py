@@ -20,9 +20,8 @@ def list_all_prayers(
     Response includes `items`, `total`, and `has_more`.
     """
     skip = (page - 1) * page_size
-    items, total = crud.get_all_prayers_paginated(
+    items, total, has_more = crud.get_all_prayers_paginated(
         db, skip=skip, limit=page_size)
-    has_more = (skip + len(items)) < total
     return {"items": items, "total": total, "has_more": has_more}
 
 
