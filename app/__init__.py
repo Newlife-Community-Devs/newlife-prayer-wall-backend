@@ -1,4 +1,3 @@
 # backend app package
-from .main import app
-
-__all__ = ["app"]
+# Empty to avoid circular import issues with Vercel
+# Import app directly from app.main instead
