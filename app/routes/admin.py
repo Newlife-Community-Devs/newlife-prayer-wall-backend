@@ -17,12 +17,13 @@ def list_all_prayers(
 ):
     """Return paginated list of prayer requests for admins.
 
-    Response includes `items` and `total`.
+    Response includes `items`, `total`, and `has_more`.
     """
     skip = (page - 1) * page_size
     items, total = crud.get_all_prayers_paginated(
         db, skip=skip, limit=page_size)
-    return {"items": items, "total": total}
+    has_more = (skip + len(items)) < total
+    return {"items": items, "total": total, "has_more": has_more}
 
 
 @router.patch("/prayers/{prayer_id}/answered", response_model=schemas.PrayerOut)
