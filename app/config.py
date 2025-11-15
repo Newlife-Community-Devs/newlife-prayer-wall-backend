@@ -17,5 +17,6 @@ if DATABASE_URL and "&supa=" in DATABASE_URL:
     DATABASE_URL = DATABASE_URL.split("&supa=")[0]
 
 SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_ME")
+# Default token lifetime to 7 days (10080 minutes), overridable via env
 ACCESS_TOKEN_EXPIRE_MINUTES = int(
-    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
+    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", str(7 * 24 * 60)))

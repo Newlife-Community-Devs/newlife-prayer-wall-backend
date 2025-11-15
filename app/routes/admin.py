@@ -11,7 +11,7 @@ router = APIRouter()
 @router.get("/prayers", response_model=schemas.PrayerListOut)
 def list_all_prayers(
     page: int = Query(1, ge=1),
-    page_size: int = Query(20, ge=1, le=200),
+    page_size: int = Query(10, ge=1, le=200),
     db: Session = Depends(get_db),
     admin=Depends(require_admin),
 ):

@@ -47,15 +47,15 @@ def list_my_prayers(db: Session = Depends(get_db), current_user=Depends(get_curr
 @router.get("/wall", response_model=schemas.PrayerListOut)
 def get_prayer_wall(
     skip: int = 0,
-    limit: int = 20,
+    limit: int = 10,
     filters: schemas.PrayerFilter = Depends(),
     db: Session = Depends(get_db)
 ):
     """Get paginated and filtered public prayer wall"""
     items, total, has_more = crud.get_all_prayers_paginated(
-        db, 
-        skip=skip, 
-        limit=limit, 
+        db,
+        skip=skip,
+        limit=limit,
         filters=filters
     )
     return {
@@ -76,39 +76,42 @@ def update_prayer(
     prayer = crud.get_prayer(db, prayer_id)
     if not prayer:
         raise HTTPException(status_code=404, detail="Prayer request not found")
-    
+
     # Only admins can update any prayer request
     if not current_user.is_admin and prayer.owner_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to update this prayer request")
-    
+        raise HTTPException(
+            status_code=403, detail="Not authorized to update this prayer request")
+
     # Regular users can only mark their own prayers as answered
     if not current_user.is_admin:
         if update.status or update.is_flagged:
-            raise HTTPException(status_code=403, detail="Only admins can update status or flag prayers")
-    
+            raise HTTPException(
+                status_code=403, detail="Only admins can update status or flag prayers")
+
     return crud.update_prayer_status(db, prayer, update)
 
 
 @router.get("/moderation", response_model=schemas.PrayerListOut)
 def get_prayers_for_moderation(
     skip: int = 0,
-    limit: int = 20,
+    limit: int = 10,
     filters: schemas.PrayerFilter = Depends(),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_active_user)
 ):
     """Get prayers needing moderation (admin only)"""
     if not current_user.is_admin:
-        raise HTTPException(status_code=403, detail="Not authorized to access moderation queue")
-    
+        raise HTTPException(
+            status_code=403, detail="Not authorized to access moderation queue")
+
     # Default to showing pending prayers if no status filter
     if not filters.status:
         filters.status = schemas.PrayerStatus.PENDING
-    
+
     items, total, has_more = crud.get_all_prayers_paginated(
-        db, 
-        skip=skip, 
-        limit=limit, 
+        db,
+        skip=skip,
+        limit=limit,
         filters=filters
     )
     return {
