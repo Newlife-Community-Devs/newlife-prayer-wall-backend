@@ -75,12 +75,23 @@ class PrayerPublicIn(BaseModel):
     keepAnonymous: Optional[bool] = False
 
 
+class PaginationMeta(BaseModel):
+    page: int
+    pageSize: int
+    totalRecords: int
+    lowerBoundSize: int
+    upperBoundSize: int
+    totalPages: int
+
+
 class PrayerListOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    message: str = "Success"
+    code: int = 200
+    data: PaginationMeta
+    # Renamed to 'data' in actual response but kept for internal compat
     items: list[PrayerOut]
-    total: int
-    has_more: bool
 
 
 class PrayerUpdate(BaseModel):

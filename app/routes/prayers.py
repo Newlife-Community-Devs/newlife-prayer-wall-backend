@@ -44,24 +44,38 @@ def list_my_prayers(db: Session = Depends(get_db), current_user=Depends(get_curr
     return crud.get_prayers_for_user(db, user_id=current_user.id)
 
 
-@router.get("/wall", response_model=schemas.PrayerListOut)
+@router.get("/wall")
 def get_prayer_wall(
-    skip: int = 0,
-    limit: int = 10,
+    page: int = 1,
+    page_size: int = 10,
     filters: schemas.PrayerFilter = Depends(),
     db: Session = Depends(get_db)
 ):
     """Get paginated and filtered public prayer wall"""
+    skip = (page - 1) * page_size
     items, total, has_more = crud.get_all_prayers_paginated(
         db,
         skip=skip,
-        limit=limit,
+        limit=page_size,
         filters=filters
     )
+
+    total_pages = (total + page_size - 1) // page_size if page_size > 0 else 0
+    lower_bound = skip + 1 if total > 0 else 0
+    upper_bound = min(skip + page_size, total)
+
     return {
-        "items": items,
-        "total": total,
-        "has_more": has_more
+        "message": "Success",
+        "code": 200,
+        "data": {
+            "page": page,
+            "pageSize": page_size,
+            "totalRecords": total,
+            "lowerBoundSize": lower_bound,
+            "upperBoundSize": upper_bound,
+            "totalPages": total_pages,
+            "data": items
+        }
     }
 
 
@@ -91,10 +105,10 @@ def update_prayer(
     return crud.update_prayer_status(db, prayer, update)
 
 
-@router.get("/moderation", response_model=schemas.PrayerListOut)
+@router.get("/moderation")
 def get_prayers_for_moderation(
-    skip: int = 0,
-    limit: int = 10,
+    page: int = 1,
+    page_size: int = 10,
     filters: schemas.PrayerFilter = Depends(),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_active_user)
@@ -108,14 +122,28 @@ def get_prayers_for_moderation(
     if not filters.status:
         filters.status = schemas.PrayerStatus.PENDING
 
+    skip = (page - 1) * page_size
     items, total, has_more = crud.get_all_prayers_paginated(
         db,
         skip=skip,
-        limit=limit,
+        limit=page_size,
         filters=filters
     )
+
+    total_pages = (total + page_size - 1) // page_size if page_size > 0 else 0
+    lower_bound = skip + 1 if total > 0 else 0
+    upper_bound = min(skip + page_size, total)
+
     return {
-        "items": items,
-        "total": total,
-        "has_more": has_more
+        "message": "Success",
+        "code": 200,
+        "data": {
+            "page": page,
+            "pageSize": page_size,
+            "totalRecords": total,
+            "lowerBoundSize": lower_bound,
+            "upperBoundSize": upper_bound,
+            "totalPages": total_pages,
+            "data": items
+        }
     }
